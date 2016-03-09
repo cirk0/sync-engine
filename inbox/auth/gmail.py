@@ -191,32 +191,55 @@ class GmailAuthHandler(OAuthAuthHandler):
 
         return validation_dict
 
-    def verify_config(self, account):
-        """
-        Verifies configuration, specifically presence of 'All Mail' folder.
-        Will raise an inbox.crispin.GmailSettingError if not present.
+#<<<<<<< HEAD
+#    def verify_config(self, account):
+#        """
+#        Verifies configuration, specifically presence of 'All Mail' folder.
+#        Will raise an inbox.crispin.GmailSettingError if not present.
+#
+#        """
+#        conn = self.connect_account(account)
+#        # make a crispin client and check the folders
+#        client = GmailCrispinClient(account.id,
+#                                    provider_info('gmail'),
+#                                    account.email_address,
+#                                    conn,
+#                                    readonly=True)
+#        client.sync_folders()
+#        conn.logout()
+#        return True
 
-        """
-        conn = self.connect_account(account)
-        # make a crispin client and check the folders
-        client = GmailCrispinClient(account.id,
-                                    provider_info('gmail'),
-                                    account.email_address,
-                                    conn,
-                                    readonly=True)
-        client.sync_folders()
-        conn.logout()
-        return True
-
-    def interactive_auth(self, email_address=None):
+#    def interactive_auth(self, email_address=None):
+#=======
+    def get_authorization_url(self, email_address=None):
+#>>>>>>> pr-104
         url_args = {'redirect_uri': self.OAUTH_REDIRECT_URI,
-                    'client_id': self.OAUTH_CLIENT_ID,
-                    'response_type': 'code',
-                    'scope': self.OAUTH_SCOPE,
-                    'access_type': 'offline'}
+            'client_id': self.OAUTH_CLIENT_ID,
+            'response_type': 'code',
+            'scope': self.OAUTH_SCOPE,
+            'access_type': 'offline'}
+
         if email_address:
             url_args['login_hint'] = email_address
+
         url = url_concat(self.OAUTH_AUTHENTICATE_URL, url_args)
+
+        return url
+
+    def init_auth(self, email_address=None):
+        authorization_url = self.get_authorization_url(email_address)
+
+        return {"provider_type": "oauth", "authorization_url": authorization_url}
+
+    def auth(self, auth_code):
+        try:
+            auth_response = self._get_authenticated_user(auth_code)
+            return auth_response
+        except OAuthError:
+            return False
+
+    def interactive_auth(self, email_address=None):
+        url = self.get_authorization_url(email_address)
 
         print 'To authorize Inbox, visit this URL and follow the directions:'
         print '\n{}'.format(url)
