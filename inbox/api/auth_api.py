@@ -11,7 +11,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import subqueryload
 
 from inbox.models import (Account, Message, Block, Part, Thread, Namespace,
-                          Tag, Contact, Calendar, Event, Participant,
+                          Contact, Calendar, Event, Participant,
                           Transaction)
 from inbox.api.kellogs import APIEncoder
 from inbox.api import filtering
