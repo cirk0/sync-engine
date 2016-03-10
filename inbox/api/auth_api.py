@@ -18,8 +18,7 @@ from inbox.api.validation import (InputError, get_attachments,
                                   get_calendar, get_thread, get_recipients,
                                   valid_public_id, valid_event,
                                   valid_event_update, timestamp,
-                                  bounded_str, view, strict_parse_args, limit,
-                                  valid_event_action, valid_rsvp,
+                                  bounded_str, view, strict_parse_args, limit,                                
                                   ValidatableArgument,
                                   validate_draft_recipients)
 from inbox import events, contacts, sendmail
