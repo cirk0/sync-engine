@@ -10,6 +10,8 @@ from sqlalchemy import asc, or_, func
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import subqueryload
 
+from nylas.logging import get_logger
+log = get_logger()
 from inbox.models import (Account, Message, Block, Part, Thread, Namespace,
                           Contact, Calendar, Event, Transaction)
 from inbox.api.kellogs import APIEncoder
@@ -22,7 +24,6 @@ from inbox.api.validation import (InputError, get_attachments,
                                   ValidatableArgument,
                                   validate_draft_recipients)
 from inbox import events, contacts, sendmail
-from inbox.log import get_logger
 from inbox.models.constants import MAX_INDEXABLE_LENGTH
 from inbox.models.action_log import schedule_action, ActionError
 from inbox.models.session import InboxSession, session_scope
