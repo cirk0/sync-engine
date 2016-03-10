@@ -14,7 +14,7 @@ from inbox.models import (Account, Message, Block, Part, Thread, Namespace,
                           Contact, Calendar, Event, Transaction)
 from inbox.api.kellogs import APIEncoder
 from inbox.api import filtering
-from inbox.api.validation import (InputError, get_tags, get_attachments,
+from inbox.api.validation import (InputError, get_attachments,
                                   get_calendar, get_thread, get_recipients,
                                   valid_public_id, valid_event,
                                   valid_event_update, timestamp, boolean,
