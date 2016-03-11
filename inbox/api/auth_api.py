@@ -31,7 +31,7 @@ from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
 
 from inbox.util.url import provider_from_address
-from inbox.auth import handler_from_provider
+from inbox.auth.base import handler_from_provider
 from inbox.basicauth import NotSupportedError
 
 from err import err
