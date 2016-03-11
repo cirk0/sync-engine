@@ -26,8 +26,8 @@ from inbox.api.validation import (InputError, get_attachments,
 from inbox import events, contacts, sendmail
 from inbox.models.constants import MAX_INDEXABLE_LENGTH
 from inbox.models.action_log import schedule_action
-from inbox.models.session import InboxSession, session_scope
-from inbox.search.adaptor import NamespaceSearchEngine, SearchEngineError
+from inbox.models.session import session_scope
+from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
 
 from inbox.util.url import provider_from_address
