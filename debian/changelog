@@ -1,5 +1,6 @@
 inbox-sync (0.4) unstable; urgency=low
 
-  * Initial release.
+  * 7209a8d gevent 1.0.1 => 1.0.2
 
- -- Rob McQueen <rob@nilas.com>  Tue, 20 Jan 2015 06:50:32 +0000
+
+ -- mark <mark@ecasework.com>  Wed, 16 Mar 2016 11:14:44 +0000

@@ -309,6 +309,17 @@ providers = dict([
                        # Postini
                        "*.psmtp.com"],
     }),
+    ("ecasework", {
+        "type": "generic",
+        "imap": ("smtp.ecasework.com", 993),
+        "smtp": ("smtp.ecasework.com", 587),
+        "auth": "password",
+        "domains": ["ecasework.com"],
+        "folder_map": {"INBOX.Archive": "archive",
+                       "INBOX.Drafts": "drafts", "INBOX.Junk Mail": "spam",
+                       "INBOX.Trash": "trash", "INBOX.Sent Items": "sent",
+                       "INBOX.Sent": "sent"},
+    }),
     ("custom", {
         "type": "generic",
         "auth": "password",
