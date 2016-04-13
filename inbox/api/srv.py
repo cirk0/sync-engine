@@ -13,7 +13,6 @@ from inbox.api.validation import valid_public_id
 
 from ns_api import app as ns_api
 from ns_api import DEFAULT_LIMIT
-
 from auth_api import app as auth_api
 
 from inbox.webhooks.gpush_notifications import app as webhooks_api
