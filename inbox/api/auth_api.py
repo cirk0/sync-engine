@@ -85,14 +85,14 @@ def custom_auth():
     data = request.get_json(force=True)
 
     args = []
-     if not data.get('email'):
+    if not data.get('email'):
         return err(406, 'Email address is required!')
  
-     if not data.get('password'):
-         return err(406, 'Password is required!')
+    if not data.get('password'):
+        return err(406, 'Password is required!')
  
 
  
-     return authorize(data.get('email'), 'custom', {
-                     "provider_type": "custom", "email_address": data.get('email'),
-                     "password": data.get('password'})
+    return authorize(data.get('email'), 'custom', {
+                  "provider_type": "custom", "email_address": data.get('email'),
+                  "password": data.get('password')})
