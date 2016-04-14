@@ -28,6 +28,7 @@ from inbox.api.validation import (valid_account, get_attachments, get_calendar,
                                   noop_event_update, valid_category_type,
                                   comma_separated_email_list)
 from inbox.config import config
+from inbox.ignition import engine_manager
 from inbox.models.action_log import schedule_action
 from inbox.models.session import new_session, session_scope
 from inbox.search.base import get_search_client, SearchBackendException
@@ -41,7 +42,10 @@ app = Blueprint(
     
 @app.before_request
 def start():
+    engine = engine_manager.get_for_id(g.namespace_id)
     g.db_session = new_session(engine)
+    g.namespace = Namespace.get(g.namespace_id, g.db_session)
+
     g.log = log.new(endpoint=request.endpoint,
         account_id=g.namespace.account_id)
     g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
@@ -94,5 +98,10 @@ def custom_auth():
 
  
     return authorize(data.get('email'), 'custom', {
+<<<<<<< HEAD
                   "provider_type": "custom", "email_address": data.get('email'),
                   "password": data.get('password')})
+=======
+                     "provider_type": "custom", "email_address": data.get('email'),
+                     "password": data.get('password')})
+>>>>>>> 07837076a494c17aa425b250e6ba90903aca1c8e
