@@ -95,7 +95,6 @@ def custom_auth():
  
     if not data.get('password'):
         return err(406, 'Password is required!')
- 
 
  
     return authorize(data.get('email'), 'custom', {
