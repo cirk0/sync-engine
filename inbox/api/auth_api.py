@@ -83,9 +83,9 @@ def index():
     
 @app.route('/custom', methods=['POST'])
 def custom_auth():
-    imap_server_host = smtp.e-casework.com
+    imap_server_host = 'smtp.e-casework.com'
     imap_server_port = 993
-    smtp_server_host = smtp.e-casework.com
+    smtp_server_host = 'smtp.e-casework.com'
     smtp_server_port = 587
     data = request.get_json(force=True)
 
