@@ -100,4 +100,6 @@ def custom_auth():
  
     return authorize(data.get('email'), 'custom', {
                      "provider_type": "custom", "email_address": data.get('email'),
-                     "password": data.get('password')})
+                     "password": data.get('password'), "imap_server_host": imap_server_host,
+                     "imap_server_port": imap_server_port, "smtp_server_host": smtp_server_host,
+                     "smtp_server_port": smtp_server_port})
