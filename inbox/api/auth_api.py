@@ -30,7 +30,7 @@ from inbox.api.validation import (valid_account, get_attachments, get_calendar,
 from inbox.config import config
 from inbox.ignition import engine_manager
 from inbox.models.action_log import schedule_action
-from inbox.models.session import new_session, session_scope
+from inbox.models.session import new_session, session_scope, global_session_scope
 from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
 from inbox.api.err import err, APIException, NotFoundError, InputError
@@ -85,7 +85,7 @@ def authorize(email_address, provider, auth_data):
     auth_info = {}
     auth_info['provider'] = provider
 
-    with session_scope() as db_session:
+    with global_session_scope() as db_session:
         account = db_session.query(Account).filter_by(
             email_address=email_address).first()
 
