@@ -88,7 +88,7 @@ def authorize(email_address, provider, auth_data):
     auth_info = {}
     auth_info['provider'] = provider
 
-    shard_id = target << 48
+    shard_id = 0 << 48
 
     with session_scope(shard_id) as db_session:
         account = db_session.query(Account).filter_by(
