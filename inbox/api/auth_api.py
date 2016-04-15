@@ -33,6 +33,7 @@ from inbox.models.action_log import schedule_action
 from inbox.models.session import new_session, session_scope, global_session_scope
 from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
+from inbox.auth.generic import GenericAuthHandler
 from inbox.auth.base import handler_from_provider
 from inbox.basicauth import NotSupportedError
 from inbox.api.err import err, APIException, NotFoundError, InputError
@@ -87,7 +88,9 @@ def authorize(email_address, provider, auth_data):
     auth_info = {}
     auth_info['provider'] = provider
 
-    with global_session_scope() as db_session:
+    shard_id = target << 48
+
+    with session_scope(shard_id) as db_session:
         account = db_session.query(Account).filter_by(
             email_address=email_address).first()
 
@@ -98,7 +101,7 @@ def authorize(email_address, provider, auth_data):
         return err(403, 'Authorizatison error!')
 
     auth_info.update(auth_response)
-    account = auth_handler.create_account(db_session, email_address, auth_info)
+    account = auth_handler.create_account(email_address, auth_info)
 
     try:
         if auth_handler.verify_account(account):
