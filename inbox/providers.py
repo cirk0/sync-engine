@@ -296,6 +296,20 @@ providers = dict([
         "domains": ["139.com"],
         "mx_servers": ["mx[1-3].mail.139.com"]
     }),
+    ("ecase_dev", {
+        "type": "generic",
+        "imap": ("smtp.e-casework.com", 993),
+        "smtp": ("smtp.e-casework.com", 587),
+        "auth": "password",
+        "domains": ["dev.e-casework.com"],
+    }),
+    ("ecase_live", {
+        "type": "generic",
+        "imap": ("smtp.ecasework.com", 993),
+        "smtp": ("smtp.ecasework.com", 587),
+        "auth": "password",
+        "domains": ["ecasework.com"],
+    }),
     ("gmail", {
         "imap": ("imap.gmail.com", 993),
         "smtp": ("smtp.gmail.com", 587),
