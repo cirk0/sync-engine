@@ -42,7 +42,7 @@ for code in default_exceptions.iterkeys():
 def auth():
     """ Check for account ID on all non-root URLS """
     if request.path in ('/accounts', '/accounts/', '/') \
-                       or request.path.startswith('/w/', '/auth/'):
+                       or request.path.startswith(('/w/', '/auth/')):
         return
 
     if not request.authorization or not request.authorization.username:
