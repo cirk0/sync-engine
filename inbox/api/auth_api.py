@@ -80,6 +80,32 @@ def index():
        folder for how to use this API.
     </body></html>
     """
+
+def authorize(email_address, provider, auth_data):
+    auth_info = {}
+    auth_info['provider'] = provider
+
+    with session_scope() as db_session:
+        account = db_session.query(Account).filter_by(
+            email_address=email_address).first()
+
+    auth_handler = handler_from_provider(provider)
+    auth_response = auth_handler.auth(auth_data)
+
+    if auth_response is False:
+        return err(403, 'Authorizatison error!')
+
+    auth_info.update(auth_response)
+    account = auth_handler.create_account(db_session, email_address, auth_info)
+
+    try:
+        if auth_handler.verify_account(account):
+            db_session.add(account)
+            db_session.commit()
+    except NotSupportedError as e:
+        return err(406, 'Provider not supported!')
+
+    return g.encoder.jsonify({"msg": "Authorization success"})
     
 @app.route('/custom', methods=['POST'])
 def custom_auth():
