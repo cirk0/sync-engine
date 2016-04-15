@@ -93,12 +93,14 @@ def authorize(email_address, provider, auth_data):
     with session_scope(shard_id) as db_session:
         account = db_session.query(Account).filter_by(
             email_address=email_address).first()
+        if account is not None:
+            return err(406, 'Already have this account!')
 
     auth_handler = handler_from_provider(provider)
     auth_response = auth_handler.auth(auth_data)
 
     if auth_response is False:
-        return err(403, 'Authorizatison error!')
+        return err(403, 'Authorization error!')
 
     auth_info.update(auth_response)
     account = auth_handler.create_account(email_address, auth_info)
