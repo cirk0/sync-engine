@@ -114,24 +114,38 @@ def authorize(email_address, provider, auth_data):
 
     return g.encoder.jsonify({"msg": "Authorization success"})
     
-@app.route('/custom', methods=['POST'])
-def custom_auth():
-    imap_server_host = 'smtp.e-casework.com'
-    imap_server_port = 993
-    smtp_server_host = 'smtp.e-casework.com'
-    smtp_server_port = 587
+#@app.route('/custom', methods=['POST'])
+#def custom_auth():
+#    imap_server_host = 'smtp.e-casework.com'
+#    imap_server_port = 993
+#    smtp_server_host = 'smtp.e-casework.com'
+#    smtp_server_port = 587
+#    data = request.get_json(force=True)
+#
+#    args = []
+#    if not data.get('email'):
+#        return err(406, 'Email address is required!')
+# 
+#    if not data.get('password'):
+#        return err(406, 'Password is required!')
+#
+# 
+#    return authorize(data.get('email'), 'custom', {
+#                     "provider_type": "custom", "email_address": data.get('email'),
+#                     "password": data.get('password'), "imap_server_host": imap_server_host,
+#                     "imap_server_port": imap_server_port, "smtp_server_host": smtp_server_host,
+#                     "smtp_server_port": smtp_server_port})
+
+@app.route('/generic', methods=['POST'])
+def generic_auth():
     data = request.get_json(force=True)
 
-    args = []
     if not data.get('email'):
         return err(406, 'Email address is required!')
- 
+
     if not data.get('password'):
         return err(406, 'Password is required!')
 
- 
-    return authorize(data.get('email'), 'custom', {
-                     "provider_type": "custom", "email_address": data.get('email'),
-                     "password": data.get('password'), "imap_server_host": imap_server_host,
-                     "imap_server_port": imap_server_port, "smtp_server_host": smtp_server_host,
-                     "smtp_server_port": smtp_server_port})
+    return authorize(data.get('email'), provider_from_address(data.get('email')), {
+                  "provider_type": "generic", "email_address": data.get('email'),
+                  "password": data.get('password')})
