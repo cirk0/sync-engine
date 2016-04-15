@@ -45,16 +45,15 @@ app = Blueprint(
     
 @app.before_request
 def start():
-#   engine = engine_manager.get_for_id(g.namespace_id)
-#   g.db_session = new_session(engine)
-#   g.namespace = Namespace.get(g.namespace_id, g.db_session)
+    engine = engine_manager.get_for_id(g.namespace_id)
+    g.db_session = new_session(engine)
+    g.namespace = Namespace.get(g.namespace_id, g.db_session)
 
-#   g.log = log.new(endpoint=request.endpoint,
-#       account_id=g.namespace.account_id)
-   g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
-   g.encoder = APIEncoder()
-   return
-
+    g.log = log.new(endpoint=request.endpoint,
+        account_id=g.namespace.account_id)
+    g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
+    g.encoder = APIEncoder()
+    
 @app.after_request
 def finish(response):
     if response.status_code == 200 and hasattr(g, 'db_session'):  # be cautions
