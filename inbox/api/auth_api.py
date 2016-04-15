@@ -45,9 +45,9 @@ app = Blueprint(
     
 @app.before_request
 def start():
-    engine = engine_manager.get_for_id(g.namespace_id)
-    g.db_session = new_session(engine)
-    g.namespace = Namespace.get(g.namespace_id, g.db_session)
+#    engine = engine_manager.get_for_id(g.namespace_id)
+#    g.db_session = new_session(engine)
+#    g.namespace = Namespace.get(g.namespace_id, g.db_session)
 
     g.log = log.new(endpoint=request.endpoint,
         account_id=g.namespace.account_id)
