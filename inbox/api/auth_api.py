@@ -33,6 +33,8 @@ from inbox.models.action_log import schedule_action
 from inbox.models.session import new_session, session_scope, global_session_scope
 from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
+from inbox.auth.base import handler_from_provider
+from inbox.basicauth import NotSupportedError
 from inbox.api.err import err, APIException, NotFoundError, InputError
 
 app = Blueprint(
