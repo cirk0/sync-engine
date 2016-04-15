@@ -51,8 +51,8 @@ def start():
 
 #   g.log = log.new(endpoint=request.endpoint,
 #       account_id=g.namespace.account_id)
-#  g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
-#  g.encoder = APIEncoder()
+   g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
+   g.encoder = APIEncoder()
    return
 
 @app.after_request
