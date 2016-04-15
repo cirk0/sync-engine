@@ -12,7 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from nylas.logging import get_logger
 log = get_logger()
 
-from inbox.models import (Message, Block, Part, Thread, Namespace,
+from inbox.models import (Account, Message, Block, Part, Thread, Namespace,
                           Contact, Calendar, Event, Transaction,
                           DataProcessingCache, Category, MessageCategory)
 from inbox.models.backends.generic import GenericAccount
