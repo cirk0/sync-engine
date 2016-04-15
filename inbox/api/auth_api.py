@@ -35,6 +35,7 @@ from inbox.search.base import get_search_client, SearchBackendException
 from inbox.transactions import delta_sync
 from inbox.auth.generic import GenericAuthHandler
 from inbox.auth.base import handler_from_provider
+from inbox.util.url import provider_from_address
 from inbox.basicauth import NotSupportedError
 from inbox.api.err import err, APIException, NotFoundError, InputError
 
@@ -45,22 +46,8 @@ app = Blueprint(
     
 @app.before_request
 def start():
-#    engine = engine_manager.get_for_id(g.namespace_id)
-#    g.db_session = new_session(engine)
-#    g.namespace = Namespace.get(g.namespace_id, g.db_session)
-
-#    g.log = log.new(endpoint=request.endpoint,
-#        account_id=g.namespace.account_id)
     g.parser = reqparse.RequestParser(argument_class=ValidatableArgument)
     g.encoder = APIEncoder()
-    
-#@app.after_request
-#def finish(response):
-#    if response.status_code == 200 and hasattr(g, 'db_session'):  # be cautions
-#        g.db_session.commit()
-#    if hasattr(g, 'db_session'):
-#        g.db_session.close()
-#    return response
     
 @app.errorhandler(NotImplementedError)
 def handle_not_implemented_error(error):
@@ -113,28 +100,6 @@ def authorize(email_address, provider, auth_data):
         return err(406, 'Provider not supported!')
 
     return g.encoder.jsonify({"msg": "Authorization success"})
-    
-#@app.route('/custom', methods=['POST'])
-#def custom_auth():
-#    imap_server_host = 'smtp.e-casework.com'
-#    imap_server_port = 993
-#    smtp_server_host = 'smtp.e-casework.com'
-#    smtp_server_port = 587
-#    data = request.get_json(force=True)
-#
-#    args = []
-#    if not data.get('email'):
-#        return err(406, 'Email address is required!')
-# 
-#    if not data.get('password'):
-#        return err(406, 'Password is required!')
-#
-# 
-#    return authorize(data.get('email'), 'custom', {
-#                     "provider_type": "custom", "email_address": data.get('email'),
-#                     "password": data.get('password'), "imap_server_host": imap_server_host,
-#                     "imap_server_port": imap_server_port, "smtp_server_host": smtp_server_host,
-#                     "smtp_server_port": smtp_server_port})
 
 @app.route('/generic', methods=['POST'])
 def generic_auth():
