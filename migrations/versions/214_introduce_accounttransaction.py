@@ -24,7 +24,7 @@ def upgrade():
                     sa.Column('deleted_at', sa.DateTime(), nullable=True),
                     sa.Column('id', sa.BigInteger(), nullable=False),
                     sa.Column('public_id', sa.BINARY(length=16), nullable=False),
-                    sa.Column('namespace_id', namespace_id_type, nullable=True),
+                    sa.Column('namespace_id', sa.BigInteger(), nullable=True),
                     sa.Column('object_type', sa.String(20), nullable=False),
                     sa.Column('record_id', sa.BigInteger(), nullable=False),
                     sa.Column('object_public_id', sa.String(191), nullable=False),
