@@ -301,6 +301,10 @@ providers = dict([
         "imap": ("smtp.e-casework.com", 993),
         "smtp": ("smtp.e-casework.com", 587),
         "auth": "password",
+        "folder_map": {"INBOX.Archive": "archive",
+                       "INBOX.Drafts": "drafts", "INBOX.Junk Mail": "spam",
+                       "INBOX.Sent": "sent", "INBOX.Sent Items": "sent",
+                       "INBOX.Trash": "trash"},
         "domains": ["dev.e-casework.com"],
     }),
     ("ecase_live", {
@@ -308,6 +312,10 @@ providers = dict([
         "imap": ("smtp.ecasework.com", 993),
         "smtp": ("smtp.ecasework.com", 587),
         "auth": "password",
+        "folder_map": {"INBOX.Archive": "archive",
+                       "INBOX.Drafts": "drafts", "INBOX.Junk Mail": "spam",
+                       "INBOX.Sent": "sent", "INBOX.Sent Items": "sent",
+                       "INBOX.Trash": "trash"},
         "domains": ["ecasework.com"],
     }),
     ("gmail", {
