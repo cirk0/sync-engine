@@ -21,10 +21,13 @@ from inbox.util.addr import parse_mimepart_address_header
 from inbox.util.misc import parse_references, get_internaldate
 from inbox.util.blockstore import save_to_blockstore
 from inbox.security.blobstorage import encode_blob, decode_blob
-from inbox.models.mixins import HasPublicID, HasRevisions
+from inbox.models.mixins import (HasPublicID, HasRevisions, UpdatedAtMixin,
+                                 DeletedAtMixin)
 from inbox.models.base import MailSyncBase
 from inbox.models.namespace import Namespace
 from inbox.models.category import Category
+
+from inbox.sqlalchemy_ext.util import MAX_MYSQL_INTEGER
 
 
 def _trim_filename(s, namespace_id, max_len=64):
@@ -36,7 +39,8 @@ def _trim_filename(s, namespace_id, max_len=64):
     return s
 
 
-class Message(MailSyncBase, HasRevisions, HasPublicID):
+class Message(MailSyncBase, HasRevisions, HasPublicID, UpdatedAtMixin,
+              DeletedAtMixin):
 
     @property
     def API_OBJECT_NAME(self):
@@ -75,13 +79,24 @@ class Message(MailSyncBase, HasRevisions, HasPublicID):
     is_read = Column(Boolean, server_default=false(), nullable=False)
     is_starred = Column(Boolean, server_default=false(), nullable=False)
 
-    # For drafts (both Inbox-created and otherwise)
+    # For drafts (both Nylas-created and otherwise)
     is_draft = Column(Boolean, server_default=false(), nullable=False)
     is_sent = Column(Boolean, server_default=false(), nullable=False)
 
     # REPURPOSED
     state = Column(Enum('draft', 'sending', 'sending failed', 'sent',
                         'actions_pending', 'actions_committed'))
+
+    @property
+    def is_sending(self):
+        return self.version == MAX_MYSQL_INTEGER and not self.is_draft
+
+    def mark_as_sending(self):
+        if self.is_sent:
+            raise ValueError('Cannot mark a sent message as sending')
+        self.version = MAX_MYSQL_INTEGER
+        self.is_draft = False
+        self.regenerate_inbox_uid()
 
     @property
     def categories_changes(self):
@@ -299,7 +314,7 @@ class Message(MailSyncBase, HasRevisions, HasPublicID):
         # more details.
         self.received_date = self.received_date.replace(microsecond=0)
 
-        # Custom Inbox header
+        # Custom Nylas header
         self.inbox_uid = parsed.headers.get('X-INBOX-ID')
 
         # In accordance with JWZ (http://www.jwz.org/doc/threading.html)
@@ -544,10 +559,10 @@ class Message(MailSyncBase, HasRevisions, HasPublicID):
             columns += ['message_id_header', 'in_reply_to', 'references']
         return (
             load_only(*columns),
-            subqueryload('parts').joinedload('block'),
+            subqueryload('parts'),
             subqueryload('thread').load_only('public_id', 'discriminator'),
             subqueryload('events').load_only('public_id', 'discriminator'),
-            subqueryload('messagecategories').joinedload('category')
+            subqueryload('messagecategories')
         )
 
 

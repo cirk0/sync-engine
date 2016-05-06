@@ -23,7 +23,7 @@ log = get_logger()
 def reconcile_message(new_message, session):
     """
     Check to see if the (synced) Message instance new_message was originally
-    created/sent via the Inbox API (based on the X-Inbox-Uid header. If so,
+    created/sent via the Nylas API (based on the X-Inbox-Uid header. If so,
     update the existing message with new attributes from the synced message
     and return it.
 
@@ -243,21 +243,18 @@ def _batch_delete(engine, table, xxx_todo_changeme, throttle=False,
 
     query = 'DELETE FROM {} WHERE {}={} LIMIT 2000;'.format(table, column, id_)
 
-    pruned_messages = False
     for i in range(0, batches):
         if throttle and check_throttle():
             log.info("Throttling deletion")
             gevent.sleep(60)
         if dry_run is False:
-            if table == "message" and not pruned_messages:
-                if engine.execute("SELECT EXISTS(SELECT id FROM message WHERE "
-                                  "{}={} AND reply_to_message_id IS NOT NULL);"
-                                  .format(column, id_)).scalar():
-                    query = ('DELETE FROM message WHERE {}={} AND '
-                             'reply_to_message_id IS NOT NULL LIMIT 2000;'
-                             .format(column, id_))
-                else:
-                    pruned_messages = True
+            if table == "message":
+                # messages must be order by the foreign key `received_date`
+                # otherwise MySQL will raise an error when deleting
+                # from the message table
+                query = ('DELETE FROM message WHERE {}={} '
+                         'ORDER BY received_date desc LIMIT 2000;'
+                         .format(column, id_))
             engine.execute(query)
         else:
             log.debug(query)
@@ -319,3 +316,39 @@ def check_throttle():
         return True
     else:
         return False
+
+
+def purge_transactions(shard_id, days_ago=60, limit=1000, throttle=False,
+                       dry_run=False):
+    # Delete all items from the transaction table that are older than
+    # `days_ago` days.
+    if dry_run:
+        offset = 0
+        query = ("SELECT id FROM transaction where created_at < "
+                 "DATE_SUB(now(), INTERVAL {} day) LIMIT {}".
+                 format(days_ago, limit))
+    else:
+        query = ("DELETE FROM transaction where created_at < DATE_SUB(now(),"
+                 " INTERVAL {} day) LIMIT {}".format(days_ago, limit))
+    try:
+        # delete from rows until there are no more rows affected
+        rowcount = 1
+        while rowcount > 0:
+            while throttle and check_throttle():
+                log.info("Throttling deletion")
+                gevent.sleep(60)
+            with session_scope_by_shard_id(shard_id, versioned=False) as \
+                    db_session:
+                if dry_run:
+                    rowcount = db_session.execute("{} OFFSET {}".
+                                                  format(query, offset)).\
+                                                    rowcount
+                    offset += rowcount
+                else:
+                    rowcount = db_session.execute(query).rowcount
+            log.info("Deleted batch from transaction table", batch_size=limit,
+                     rowcount=rowcount)
+        log.info("Finished purging transaction table for shard",
+                 shard_id=shard_id, date_delta=days_ago)
+    except Exception as e:
+        log.critical("Exception encountered during deletion", exception=e)

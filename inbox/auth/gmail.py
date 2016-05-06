@@ -231,7 +231,7 @@ class GmailAuthHandler(OAuthAuthHandler):
             url_args['login_hint'] = email_address
         url = url_concat(self.OAUTH_AUTHENTICATE_URL, url_args)
 
-        print 'To authorize Inbox, visit this URL and follow the directions:'
+        print 'To authorize Nylas, visit this URL and follow the directions:'
         print '\n{}'.format(url)
 
         while True:

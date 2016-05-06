@@ -86,7 +86,11 @@ setup(
              'bin/populate-sync-queue',
              'bin/delete-marked-accounts',
              'bin/backfix-generic-imap-separators.py',
-             'bin/correct-autoincrements'
+             'bin/backfix-duplicate-categories.py',
+             'bin/correct-autoincrements',
+             'bin/update-categories',
+             'bin/detect-missing-sync-host',
+             'bin/purge-transaction-log'
              ],
 
     # See:
